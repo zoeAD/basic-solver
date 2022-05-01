@@ -1,0 +1,380 @@
+[
+    {
+        "inputs": [
+            {
+                "name": "amountIn",
+                "type": "felt"
+            }
+        ],
+        "name": "solve",
+        "outputs": [
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            },
+            {
+                "name": "xFee",
+                "type": "felt"
+            },
+            {
+                "name": "yFee",
+                "type": "felt"
+            },
+            {
+                "name": "zFee",
+                "type": "felt"
+            },
+            {
+                "name": "xreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "xreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "yreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "yreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "zreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "zreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "arr_len",
+                "type": "felt"
+            },
+            {
+                "name": "arr",
+                "type": "felt*"
+            },
+            {
+                "name": "amountOut",
+                "type": "felt"
+            },
+            {
+                "name": "counter",
+                "type": "felt"
+            },
+            {
+                "name": "amountToBuy",
+                "type": "felt"
+            }
+        ],
+        "name": "findWeights",
+        "outputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            },
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "xamount",
+                "type": "felt"
+            },
+            {
+                "name": "yamount",
+                "type": "felt"
+            },
+            {
+                "name": "zamount",
+                "type": "felt"
+            }
+        ],
+        "name": "performTrades",
+        "outputs": [
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getDexStats",
+        "outputs": [
+            {
+                "name": "xFee",
+                "type": "felt"
+            },
+            {
+                "name": "yFee",
+                "type": "felt"
+            },
+            {
+                "name": "zFee",
+                "type": "felt"
+            },
+            {
+                "name": "xreservesIn",
+                "type": "felt"
+            },
+            {
+                "name": "xreservesOut",
+                "type": "felt"
+            },
+            {
+                "name": "yreservesIn",
+                "type": "felt"
+            },
+            {
+                "name": "yreservesOut",
+                "type": "felt"
+            },
+            {
+                "name": "zreservesIn",
+                "type": "felt"
+            },
+            {
+                "name": "zreservesOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            },
+            {
+                "name": "z",
+                "type": "felt"
+            },
+            {
+                "name": "xFee",
+                "type": "felt"
+            },
+            {
+                "name": "yFee",
+                "type": "felt"
+            },
+            {
+                "name": "zFee",
+                "type": "felt"
+            },
+            {
+                "name": "xreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "xreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "yreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "yreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "zreserveIn",
+                "type": "felt"
+            },
+            {
+                "name": "zreserveOut",
+                "type": "felt"
+            },
+            {
+                "name": "arr_len",
+                "type": "felt"
+            },
+            {
+                "name": "arr",
+                "type": "felt*"
+            },
+            {
+                "name": "amount",
+                "type": "felt"
+            }
+        ],
+        "name": "obj_func",
+        "outputs": [
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            },
+            {
+                "name": "z",
+                "type": "felt"
+            },
+            {
+                "name": "arr_len",
+                "type": "felt"
+            },
+            {
+                "name": "arr",
+                "type": "felt*"
+            },
+            {
+                "name": "amount",
+                "type": "felt"
+            }
+        ],
+        "name": "x_gradient",
+        "outputs": [
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            },
+            {
+                "name": "z",
+                "type": "felt"
+            },
+            {
+                "name": "arr_len",
+                "type": "felt"
+            },
+            {
+                "name": "arr",
+                "type": "felt*"
+            },
+            {
+                "name": "amount",
+                "type": "felt"
+            }
+        ],
+        "name": "y_gradient",
+        "outputs": [
+            {
+                "name": "amountOut",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "dex_address_1",
+                "type": "felt"
+            },
+            {
+                "name": "dex_address_2",
+                "type": "felt"
+            },
+            {
+                "name": "dex_address_3",
+                "type": "felt"
+            }
+        ],
+        "name": "set_dex",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            }
+        ],
+        "name": "fmul",
+        "outputs": [
+            {
+                "name": "z",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "x",
+                "type": "felt"
+            },
+            {
+                "name": "y",
+                "type": "felt"
+            }
+        ],
+        "name": "fdiv",
+        "outputs": [
+            {
+                "name": "z",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

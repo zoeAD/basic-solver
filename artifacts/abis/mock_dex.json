@@ -1,0 +1,58 @@
+[
+    {
+        "inputs": [],
+        "name": "get_reserves_and_fee",
+        "outputs": [
+            {
+                "name": "fee",
+                "type": "felt"
+            },
+            {
+                "name": "reserve1",
+                "type": "felt"
+            },
+            {
+                "name": "reserve2",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "_trade_amount",
+                "type": "felt"
+            }
+        ],
+        "name": "trade",
+        "outputs": [
+            {
+                "name": "trade_return",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "_fee",
+                "type": "felt"
+            },
+            {
+                "name": "_reserve_1",
+                "type": "felt"
+            },
+            {
+                "name": "_reserve_2",
+                "type": "felt"
+            }
+        ],
+        "name": "set_reserves_and_fee",
+        "outputs": [],
+        "type": "function"
+    }
+]
