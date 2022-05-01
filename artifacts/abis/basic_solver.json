@@ -27,48 +27,16 @@
                 "type": "felt"
             },
             {
-                "name": "xFee",
-                "type": "felt"
-            },
-            {
-                "name": "yFee",
-                "type": "felt"
-            },
-            {
-                "name": "zFee",
-                "type": "felt"
-            },
-            {
-                "name": "xreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "xreserveOut",
-                "type": "felt"
-            },
-            {
-                "name": "yreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "yreserveOut",
-                "type": "felt"
-            },
-            {
-                "name": "zreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "zreserveOut",
-                "type": "felt"
-            },
-            {
                 "name": "arr_len",
                 "type": "felt"
             },
             {
                 "name": "arr",
                 "type": "felt*"
+            },
+            {
+                "name": "stepsize",
+                "type": "felt"
             },
             {
                 "name": "amountOut",
@@ -126,46 +94,18 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getDexStats",
-        "outputs": [
+        "inputs": [
             {
-                "name": "xFee",
+                "name": "stats_len",
                 "type": "felt"
             },
             {
-                "name": "yFee",
-                "type": "felt"
-            },
-            {
-                "name": "zFee",
-                "type": "felt"
-            },
-            {
-                "name": "xreservesIn",
-                "type": "felt"
-            },
-            {
-                "name": "xreservesOut",
-                "type": "felt"
-            },
-            {
-                "name": "yreservesIn",
-                "type": "felt"
-            },
-            {
-                "name": "yreservesOut",
-                "type": "felt"
-            },
-            {
-                "name": "zreservesIn",
-                "type": "felt"
-            },
-            {
-                "name": "zreservesOut",
-                "type": "felt"
+                "name": "stats",
+                "type": "felt*"
             }
         ],
+        "name": "getDexStats",
+        "outputs": [],
         "stateMutability": "view",
         "type": "function"
     },
@@ -181,42 +121,6 @@
             },
             {
                 "name": "z",
-                "type": "felt"
-            },
-            {
-                "name": "xFee",
-                "type": "felt"
-            },
-            {
-                "name": "yFee",
-                "type": "felt"
-            },
-            {
-                "name": "zFee",
-                "type": "felt"
-            },
-            {
-                "name": "xreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "xreserveOut",
-                "type": "felt"
-            },
-            {
-                "name": "yreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "yreserveOut",
-                "type": "felt"
-            },
-            {
-                "name": "zreserveIn",
-                "type": "felt"
-            },
-            {
-                "name": "zreserveOut",
                 "type": "felt"
             },
             {

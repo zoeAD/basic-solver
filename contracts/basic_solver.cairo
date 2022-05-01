@@ -8,9 +8,10 @@ from starkware.cairo.common.math_cmp import (is_in_range, is_le, is_le_felt, is_
 from starkware.starknet.common.syscalls import storage_read, storage_write
 from starkware.cairo.common.alloc import alloc
 
-const base = 1000000000000000000
-const stepsize = 10000000000000000 #0.01
+const base = 1000000000000000000 # 1.0
+const stepsize = 100000000000000000 # 0.05
 const dex_len = 3
+const max_step_reductions = 3
 
 @storage_var
 func dex_list(index : felt) -> (dex : felt): 
@@ -27,71 +28,41 @@ end
 func solve{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     amountIn : felt) -> (amountOut : felt):
 
-    #Cost VS inAmount check
-    #Only use decending gradient if worth the gas cost
-    #otherwise just buy from cheapest exchange (or use very simple optimizer)
-    #----------------------------------------------------
-    #Use heuristic to set good starting values for x and y.
-    #Also for stepsize?
-    #----------------------------------------------------
     alloc_locals
+    let (stats : felt*) = alloc()
+    getDexStats(9,stats)    
 
-    let (xFee,yFee,zFee,xreserveIn,xreserveOut,yreserveIn,yreserveOut,zreserveIn,zreserveOut) = getDexStats()
-
-
-    #--------------------------------
-    #Pre-calculations that we will perform often
-    #--------------------------------
-    #tempvar a = amountIn*zFee
-    #tempvar d = yreserveOut*yFee
-    #tempvar e = 1000*yreserveIn
-    #tempvar f = amountIn*xFee
-    #tempvar i = a*zreserveOut
-    #tempvar j = 1000*zreserveIn
-    #let (k) = pow(yreserveOut,2)
-    #let (l) = pow(yFee,2)
-    #tempvar m = amountIn*l*k 
-    #tempvar n = amountIn*d
-    #let (o) = pow(xFee,2)
-    #tempvar p = o*xreserveOut
-    #tempvar q = f*xreserveOut
-    #tempvar r = 1000*xreserveIn
-    #tempvar s = amountIn*yFee
-    #let (t) = pow(amountIn,2)
-    #tempvar u = yreserveOut*l*t
-    #tempvar v = t*p
-    #--------------------------------
-  
-    let (k) = pow(yreserveOut,2)
-    let (l) = pow(yFee,2)
-    let (o) = pow(xFee,2)
+    let (k) = pow(stats[6],2)
+    let (l) = pow(stats[1],2)
+    let (o) = pow(stats[0],2)
     let (t) = pow(amountIn,2)
    
  
     let (arr : felt*) = alloc()
-    assert arr[0] = amountIn*zFee
-    assert arr[1] = yreserveOut*yFee
-    assert arr[2] = 1000*yreserveIn
-    assert arr[3] = amountIn*xFee
-    assert arr[4] = arr[0]*zreserveOut
+    assert arr[0] = amountIn*stats[2]
+    assert arr[1] = stats[6]*stats[1]
+    assert arr[2] = 1000*stats[5]
+    assert arr[3] = amountIn*stats[0]
+    assert arr[4] = arr[0]*stats[8]
     assert arr[5] = k
     assert arr[6] = l
     assert arr[7] = amountIn*l*k
     assert arr[8] = amountIn*arr[1]
     assert arr[9] = o
-    assert arr[10] = o*xreserveOut
-    assert arr[11] = arr[3]*xreserveOut
-    assert arr[12] = 1000*xreserveIn
-    assert arr[13] = amountIn*yFee
+    assert arr[10] = o*stats[4]
+    assert arr[11] = arr[3]*stats[4]
+    assert arr[12] = 1000*stats[3]
+    assert arr[13] = amountIn*stats[1]
     assert arr[14] = t
-    assert arr[15] = yreserveOut*l*t
+    assert arr[15] = stats[6]*l*t
     assert arr[16] = t*arr[10]    
-    assert arr[17] = zreserveIn * 1000
+    assert arr[17] = stats[7] * 1000
 
     #tempvar ptr : preCalcs* = new preCalcs(a,d,e,f,i,j,k,l,m,n,o,p,q,r,s,t,u,v)
     #tempvar arr : felt* = new (a,d,e,f,i,j,k,l,m,n,o, p, q, r, s, t, u, v)
-
-    let ( x, y, amountOut) = findWeights(100000000000000000,100000000000000000, xFee, yFee, zFee, xreserveIn, xreserveOut, yreserveIn, yreserveOut, zreserveIn, zreserveOut,0,arr,0,0,amountIn) #counter is set to 0 
+    
+    #Hardcoded starting values for x and y at 0.1
+    let ( x, y, amountOut) = findWeights(100000000000000000,100000000000000000,0,arr,stepsize,max_step_reductions,0,0,amountIn) #counter is set to 0 
         
     #let (xToBuy) = fmul(x,amountOut)
     #let (yToBuy) = fmul(y,amountOut)
@@ -105,10 +76,12 @@ end
 
 @view
 func findWeights{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    x : felt, y : felt, xFee, yFee, zFee, xreserveIn, xreserveOut, yreserveIn, yreserveOut, zreserveIn, zreserveOut, arr_len : felt, arr : felt*, amountOut : felt, counter : felt, amountToBuy : felt) -> (x : felt, y : felt, amountOut : felt):
+    x : felt, y : felt, arr_len : felt, arr : felt*, stepsize : felt, stepsize_reductions : felt, amountOut : felt, counter : felt, amountToBuy : felt) -> (x : felt, y : felt, amountOut : felt):
         
     alloc_locals    
-    if counter == 50 :
+    
+    #MAX ITTERATIONS
+    if counter == 20 :
         return(x,y,amountOut)
     end
 
@@ -131,27 +104,33 @@ func findWeights{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     tempvar new_x = x + deltaX
     tempvar new_y = y + deltaY
 
-    let (newAmountOut) = obj_func(new_x, new_y, (base-(new_x+new_y)),xFee, yFee, zFee, xreserveIn, xreserveOut, yreserveIn, yreserveOut, zreserveIn, zreserveOut,18,arr,amountToBuy)
+    let (newAmountOut) = obj_func(new_x, new_y, (base-(new_x+new_y)),18,arr,amountToBuy)
 
     let (amountCheck) = is_le(newAmountOut,amountOut)
-
-    #Check if we have become more efficient
-    #if amountCheck == 1:
+    
+    #This should not be done like this, either build into the formular or reduce stepsize on fail
+    #let(xyCheck) = (new_x+new_y) >= 1 Still need to check for this
+    #let(xCheck) = is_nn(new_y)
+    #let(yCheck) = is_nn(new_x)
+    #if xCheck + yCheck != 3 :
     #    return(x,y,amountOut)
     #end
+
+    #If less efficient, redoo with last result and smaller stepsize
+    if amountCheck == 1:
+        if stepsize_reductions == 0:
+            return(x,y,amountOut)
+        end
     
-    #let(xyCheck) = (new_x+new_y) >= 1 Still need to check for this
-    let(xyCheck) = is_nn(new_x+new_y)
-    let(xCheck) = is_nn(new_y)
-    let(yCheck) = is_nn(new_x)
-    
-    if xyCheck + xCheck + yCheck != 3 :
-        return(x,y,amountOut)
+        let (new_stepsize,_) = unsigned_div_rem(stepsize,2)
+        let(xx, yy, amountOutt) = findWeights(x,y,0,arr,new_stepsize,stepsize_reductions-1,amountOut,counter+1,amountToBuy)
+        return(xx, yy, amountOutt)
+
+    #Continue normaly
+    else:
+	let(xx, yy, amountOutt) = findWeights(new_x,new_y,0,arr,stepsize,stepsize_reductions,newAmountOut,counter+1,amountToBuy)
+    	return(xx, yy, amountOutt)
     end
-
-    let(xx, yy, amountOutt) = findWeights(new_x,new_y, xFee, yFee, zFee, xreserveIn, xreserveOut, yreserveIn, yreserveOut, zreserveIn, zreserveOut,0,arr,newAmountOut,counter+1,amountToBuy) 
-
-    return(xx, yy, amountOutt)
 end
 
 @external
@@ -161,9 +140,11 @@ func performTrades{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check
     return(0)
 end    
 
+
+#Couldn't be bothered to make this recursive :D
 @view
 func getDexStats{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        ) -> (xFee:felt,yFee:felt,zFee:felt,xreservesIn:felt,xreservesOut:felt,yreservesIn:felt,yreservesOut:felt,zreservesIn:felt,zreservesOut:felt):
+        stats_len : felt, stats : felt*):
         alloc_locals
  	let (dex_1) = dex_list.read(0) 	
         let (xFee,xreservesOut,xreservesIn) = IDex.get_reserves_and_fee(dex_1)
@@ -171,12 +152,23 @@ func getDexStats{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 	let (yFee,yreservesOut,yreservesIn) = IDex.get_reserves_and_fee(dex_2)
 	let (dex_3) = dex_list.read(2)
 	let (zFee,zreservesOut,zreservesIn) = IDex.get_reserves_and_fee(dex_3)
-    	return(xFee,yFee,zFee,xreservesIn,xreservesOut,yreservesIn,yreservesOut,zreservesIn,zreservesOut)
+    	
+	stats[0] = xFee 
+	stats[1] = yFee
+	stats[2] = zFee
+	stats[3] = xreservesIn
+        stats[4] = xreservesOut
+        stats[5] = yreservesIn
+	stats[6] = yreservesOut
+        stats[7] = zreservesIn
+        stats[8] = zreservesOut
+	
+	return()
 end
 
 @view
 func obj_func{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    x : felt, y : felt, z : felt, xFee : felt, yFee : felt, zFee : felt, xreserveIn : felt, xreserveOut : felt, yreserveIn : felt, yreserveOut : felt, zreserveIn : felt, zreserveOut : felt, arr_len : felt, arr : felt*, amount : felt) -> (amountOut : felt):
+    x : felt, y : felt, z : felt, arr_len : felt, arr : felt*, amount : felt) -> (amountOut : felt):
     alloc_locals    
 
     tempvar b = base-(z+y)
