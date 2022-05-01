@@ -7,6 +7,12 @@ A basic solver to find the optimal trading distribution between 3 given UniV2 st
 To run basic tests:
 `make test`
 
+This is a nile project. So to setup run:
+
+`pip install cairo-nile`
+
+`nile install`
+
 ## Summary
 
 `basic_solver.cairo` implements a basic gradient descent algorithm to find the amount trading input required for each DEX to receive the maximum output.
