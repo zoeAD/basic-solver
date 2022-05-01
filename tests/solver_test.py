@@ -1,4 +1,3 @@
-"""contract.cairo test file."""
 import os
 
 import pytest
@@ -9,8 +8,6 @@ from starkware.starknet.testing.starknet import Starknet
 DEX_CONTRACT_FILE = os.path.join("contracts", "mock_dex.cairo")
 BASIC_SOLVER_FILE = os.path.join("contracts", "basic_solver.cairo")
 
-# The testing library uses python's asyncio. So the following
-# decorator and the ``async`` keyword are needed.
 @pytest.mark.asyncio
 async def test_solver():
     """Test Solver Savings"""
@@ -38,11 +35,10 @@ async def test_solver():
         source=BASIC_SOLVER_FILE,
     )
 
-    #Set Dex Stats
+    #Set Dex Stats (Fee,Reserve_1,Reserve_2)
     await dex1_contract.set_reserves_and_fee(997,8000,8000).invoke()
     await dex2_contract.set_reserves_and_fee(996,5000,5000).invoke()
     await dex3_contract.set_reserves_and_fee(997,3000,3000).invoke()
-    #xgradient = solver_contract.xgradient(997,996,997,8000,8000,5000,5000,3000,3000).call()
 
     #perform trade
     dex_trade1 = await dex1_contract.trade(1000).call()

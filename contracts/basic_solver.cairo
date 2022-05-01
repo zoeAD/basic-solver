@@ -9,7 +9,7 @@ from starkware.starknet.common.syscalls import storage_read, storage_write
 from starkware.cairo.common.alloc import alloc
 
 const base = 1000000000000000000 # 1.0
-const stepsize = 100000000000000000 # 0.05
+const stepsize = 100000000000000000 # 0.1
 const dex_len = 3
 const max_step_reductions = 3
 
@@ -37,7 +37,6 @@ func solve{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     let (o) = pow(stats[0],2)
     let (t) = pow(amountIn,2)
    
- 
     let (arr : felt*) = alloc()
     assert arr[0] = amountIn*stats[2]
     assert arr[1] = stats[6]*stats[1]
@@ -57,9 +56,6 @@ func solve{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     assert arr[15] = stats[6]*l*t
     assert arr[16] = t*arr[10]    
     assert arr[17] = stats[7] * 1000
-
-    #tempvar ptr : preCalcs* = new preCalcs(a,d,e,f,i,j,k,l,m,n,o,p,q,r,s,t,u,v)
-    #tempvar arr : felt* = new (a,d,e,f,i,j,k,l,m,n,o, p, q, r, s, t, u, v)
     
     #Hardcoded starting values for x and y at 0.1
     let ( x, y, amountOut) = findWeights(100000000000000000,100000000000000000,0,arr,stepsize,max_step_reductions,0,0,amountIn) #counter is set to 0 
@@ -144,11 +140,11 @@ end
 #Couldn't be bothered to make this recursive :D
 @view
 func getDexStats{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        stats_len : felt, stats : felt*):
-        alloc_locals
+	stats_len : felt, stats : felt*):
+	alloc_locals
  	let (dex_1) = dex_list.read(0) 	
-        let (xFee,xreservesOut,xreservesIn) = IDex.get_reserves_and_fee(dex_1)
-        let (dex_2) = dex_list.read(1)
+	let (xFee,xreservesOut,xreservesIn) = IDex.get_reserves_and_fee(dex_1)
+	let (dex_2) = dex_list.read(1)
 	let (yFee,yreservesOut,yreservesIn) = IDex.get_reserves_and_fee(dex_2)
 	let (dex_3) = dex_list.read(2)
 	let (zFee,zreservesOut,zreservesIn) = IDex.get_reserves_and_fee(dex_3)
@@ -157,11 +153,11 @@ func getDexStats{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 	stats[1] = yFee
 	stats[2] = zFee
 	stats[3] = xreservesIn
-        stats[4] = xreservesOut
-        stats[5] = yreservesIn
+	stats[4] = xreservesOut
+	stats[5] = yreservesIn
 	stats[6] = yreservesOut
-        stats[7] = zreservesIn
-        stats[8] = zreservesOut
+	stats[7] = zreservesIn
+	stats[8] = zreservesOut
 	
 	return()
 end
